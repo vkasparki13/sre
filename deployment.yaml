@@ -25,16 +25,18 @@ spec:
           cpu: "150m"
         limits:
           memory: "256Mi"     #лимиты по cpu ставить нет смысла, так как в ТЗ нет конкретного указания по поводу потребления для первых звпросов
-    startupProbe:
-      httpGet:
-        path: /healthz
-        port: 80
-      failureThreshold: 5
-      periodSeconds: 10
-    livenessProbe:
-      httpGet:
-        path: /healthz
-        port: liveness-port
-      failureThreshold: 1
-      periodSeconds: 10
-
+      startupProbe:
+        httpGet:
+          path: /healthz
+          port: 80
+        failureThreshold: 5
+        periodSeconds: 10
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          port: liveness-port
+        failureThreshold: 1
+        periodSeconds: 10
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
