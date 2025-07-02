@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: nginx
+        image: web-image
         ports:
         - containerPort: 80
         resources:
@@ -46,7 +46,7 @@ spec:
               app: web
       affinity:                                        # исключим размещение нескольких подов на одной ноде
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
+          requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
               - key: app
