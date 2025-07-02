@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: web-image
+        ports:
+        - containerPort: 80
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "150m"
+        limits:
+          memory: "256Mi"     #лимиты по cpu ставить нет смысла, так как в ТЗ нет конкретного указания по поводу потребления для первых звпросов
+    startupProbe:
+      httpGet:
+        path: /healthz
+        port: 80
+      failureThreshold: 5
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: liveness-port
+      failureThreshold: 1
+      periodSeconds: 10
+
