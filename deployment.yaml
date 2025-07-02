@@ -41,6 +41,9 @@ spec:
         - maxSkew: 1                                   # разместим поды по всем зонам
           topologyKey: topology.kubernetes.io/zone
           whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: web
       affinity:                                        # исключим размещение нескольких подов на одной ноде
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
