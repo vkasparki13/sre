@@ -16,27 +16,38 @@ spec:
     spec:
       containers:
       - name: web
-        image: web-image
+        image: nginx
         ports:
         - containerPort: 80
-      resources:
-        requests:
-          memory: "128Mi"
-          cpu: "150m"
-        limits:
-          memory: "256Mi"     #лимиты по cpu ставить нет смысла, так как в ТЗ нет конкретного указания по поводу потребления для первых звпросов
-      startupProbe:
-        httpGet:
-          path: /healthz
-          port: 80
-        failureThreshold: 5
-        periodSeconds: 10
-      livenessProbe:
-        httpGet:
-          path: /healthz
-          port: liveness-port
-        failureThreshold: 1
-        periodSeconds: 10
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "150m"
+          limits:
+            memory: "256Mi"     #лимиты по cpu ставить нет смысла, так как в ТЗ нет конкретного указания по поводу потребления для первых звпросов
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          failureThreshold: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          failureThreshold: 1
+          periodSeconds: 10
       topologySpreadConstraints:
-        - maxSkew: 1
+        - maxSkew: 1                                   # разместим поды по всем зонам
           topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+      affinity:                                        # исключим размещение нескольких подов на одной ноде
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - web
+            topologyKey: "kubernetes.io/hostname"
