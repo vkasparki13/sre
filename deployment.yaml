@@ -46,7 +46,7 @@ spec:
               app: web
       affinity:                                        # исключим размещение нескольких подов на одной ноде
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
+          preferredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
               - key: app
